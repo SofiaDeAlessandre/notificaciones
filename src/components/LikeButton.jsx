@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
-
+import { BiLike } from "react-icons/bi";
 export function LikeButton ({setArray, array}) {
     
 
@@ -18,7 +18,7 @@ export function LikeButton ({setArray, array}) {
 
     return (
         
-        <Button variant="text" onClick={handleChangeNotification}>Enviar Like</Button>
+        <BiLike variant="text" onClick={handleChangeNotification} style={{color:"orange"}}></BiLike>
         
     )
 }

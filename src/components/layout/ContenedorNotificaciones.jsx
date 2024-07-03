@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -8,13 +8,18 @@ import {
   ListItemButton,
   ListItemIcon,
   Button,
+  Container,
 } from "@mui/material";
 import { MdExpandLess, MdOutlineExpandMore } from "react-icons/md";
 import { HiBellAlert } from "react-icons/hi2";
 import { Notificacion } from "../Notificacion";
 import { arrayNotificaciones } from "../../utils/constant";
+import { FaCheckSquare } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { DeleteButton } from "../DeleteButton";
 
-export function ContenedorNotificaciones({ array, count, setCount, setArray }) {
+
+export function ContenedorNotificaciones({ array, count, setCount, setArray, handleDeleteAll }) {
   const [open, setOpen] = useState(true);
 
   const handleClick = () => {
@@ -23,7 +28,7 @@ export function ContenedorNotificaciones({ array, count, setCount, setArray }) {
 
   const handleSeen = (id) => {
     const isSeen = array.map((notificacion) => {
-      console.log(notificacion.id, id);
+      // console.log(notificacion.id, id);
       if (notificacion.id === id) {
         const updateNotificacion = { ...notificacion, visto: true };
         console.log(updateNotificacion);
@@ -32,25 +37,38 @@ export function ContenedorNotificaciones({ array, count, setCount, setArray }) {
         return notificacion;
       }
     });
-    contador();
     // setCount(count - 1);
     setArray(isSeen);
   };
 
-  const contador = () => {
-    const seenCount = array.map((notificacion) => {
-      console.log(notificacion.visto);
+  useEffect(() => {
+    console.log("useEffect");
+    array?.forEach((notificacion) => {
+      if (!notificacion.visto) {
+        setCount(count + 1);
+      } else {
+        setCount(count - 1);
+      }
     });
-    setArray(seenCount)
+  }, [array]);
+
+  const handleDelete = (id) => {
+    const deleteArray = array.filter((notificacion) => notificacion.id !== id);
+    setArray(deleteArray);
   };
+  useEffect(() => {
+    setCount(array.length);
+  }, [array.length]);
 
   return (
     <Box>
+      
       <List
         sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
         component="nav"
         aria-labelledby="nested-list-subheader"
       >
+
         <ListItemButton>
           <ListItemIcon>
             <HiBellAlert onClick={handleClick} />
@@ -61,9 +79,14 @@ export function ContenedorNotificaciones({ array, count, setCount, setArray }) {
         </ListItemButton>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
+          <DeleteButton setArray={setArray} array={array}/>
             {array.map(({ notificacion, id, visto }) => {
               return (
-                <div key={id}>
+                <Container
+                  key={id}
+                  sx={{ display: "flex", alignItems: "center" }}
+                >
+                  
                   <Notificacion
                     notificacion={notificacion}
                     key={id}
@@ -72,10 +95,21 @@ export function ContenedorNotificaciones({ array, count, setCount, setArray }) {
                     count={count}
                     array={array}
                   />
-                  <Button onClick={() => handleSeen(id)} id={id}>
-                    Visto
-                  </Button>
-                </div>
+                  {visto ? (
+                    <Button onClick={() => handleSeen(id)} id={id} disabled>
+                      <FaCheckSquare />
+                    </Button>
+                  ) : (
+                    <Button onClick={() => handleSeen(id)} id={id}>
+                      <FaCheckSquare style={{ color: "green" }} />
+                    </Button>
+                  )}
+                  <MdDelete
+                    onClick={() => handleDelete(id)}
+                    id={id}
+                    style={{ fontSize: "22px", color: "red" }}
+                  />
+                </Container>
               );
             })}
           </List>
