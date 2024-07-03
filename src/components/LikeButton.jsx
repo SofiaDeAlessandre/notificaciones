@@ -1,0 +1,24 @@
+import { Button } from "@mui/material";
+import { useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
+
+export function LikeButton ({setArray, array}) {
+    
+
+    const handleChangeNotification = () => {
+        const newNotification = {
+            notificacion: "te dio un like",
+            id: uuidv4(),
+            visto: false,
+        }
+        const newArrayNotificaciones = [...array, newNotification]
+        console.log(newArrayNotificaciones)
+        setArray(newArrayNotificaciones)
+    }
+
+    return (
+        
+        <Button variant="text" onClick={handleChangeNotification}>Enviar Like</Button>
+        
+    )
+}
