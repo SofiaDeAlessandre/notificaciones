@@ -12,7 +12,7 @@ function App() {
     <>
     
 <ContenedorNotificaciones array={array} setArray={setArray} count={count} setCount={setCount}/>
-<LikeButton setArray={setArray} array={array}/>
+<LikeButton setArray={setArray} array={array} count={count} setCount={setCount} />
     
     </>
   )

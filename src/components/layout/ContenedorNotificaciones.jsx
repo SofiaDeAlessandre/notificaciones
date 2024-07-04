@@ -18,8 +18,13 @@ import { FaCheckSquare } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { DeleteButton } from "../DeleteButton";
 
-
-export function ContenedorNotificaciones({ array, count, setCount, setArray, handleDeleteAll }) {
+export function ContenedorNotificaciones({
+  array,
+  count,
+  setCount,
+  setArray,
+  handleDeleteAll,
+}) {
   const [open, setOpen] = useState(true);
 
   const handleClick = () => {
@@ -37,38 +42,42 @@ export function ContenedorNotificaciones({ array, count, setCount, setArray, han
         return notificacion;
       }
     });
-    // setCount(count - 1);
+     setCount(count - 1);
     setArray(isSeen);
   };
 
-  useEffect(() => {
-    console.log("useEffect");
-    array?.forEach((notificacion) => {
-      if (!notificacion.visto) {
-        setCount(count + 1);
-      } else {
-        setCount(count - 1);
-      }
-    });
-  }, [array]);
+  // useEffect(() => {
+  //   console.log(array);
+  //   array?.forEach((notificacion) => {
+  //     if (!notificacion.visto) {
+  //       console.log("si");
+  //       setCount(count + 1);
+  //     }
+  //   });
+  // }, [array]);
 
   const handleDelete = (id) => {
-    const deleteArray = array.filter((notificacion) => notificacion.id !== id);
+    const deleteArray = array.filter((notificacion) => {
+      if (!notificacion.visto === true) {
+        setCount(count - 1);
+        console.log("!== true")
+      }
+      return notificacion.id !== id;
+      
+    });
     setArray(deleteArray);
   };
-  useEffect(() => {
-    setCount(array.length);
-  }, [array.length]);
+  // useEffect(() => {
+  //   setCount(array.length);
+  // }, [array.length]);
 
   return (
     <Box>
-      
       <List
         sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
         component="nav"
         aria-labelledby="nested-list-subheader"
       >
-
         <ListItemButton>
           <ListItemIcon>
             <HiBellAlert onClick={handleClick} />
@@ -79,14 +88,13 @@ export function ContenedorNotificaciones({ array, count, setCount, setArray, han
         </ListItemButton>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-          <DeleteButton setArray={setArray} array={array}/>
+            <DeleteButton setArray={setArray} array={array} />
             {array.map(({ notificacion, id, visto }) => {
               return (
                 <Container
                   key={id}
                   sx={{ display: "flex", alignItems: "center" }}
                 >
-                  
                   <Notificacion
                     notificacion={notificacion}
                     key={id}
